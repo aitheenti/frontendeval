@@ -2,6 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useClockStyles } from './useClockSyles';
 
 function AnalaogClock() {
+    const [localTime, setLocalTime] = useState({
+        hourDegree: 0,
+        minuteDegree: 0,
+        secondsDegree: 0
+    });
     const [londonTime, setLondonTime] = useState({
         hourDegree: 0,
         minuteDegree: 0,
@@ -12,11 +17,18 @@ function AnalaogClock() {
         minuteDegree: 0,
         secondsDegree: 0
     });
+    const localClockStyles = useClockStyles(localTime.hourDegree, localTime.minuteDegree, localTime.secondsDegree);
     const londonClockStyles = useClockStyles(londonTime.hourDegree, londonTime.minuteDegree, londonTime.secondsDegree);
     const pstClockStyles = useClockStyles(pstTime.hourDegree, pstTime.minuteDegree, pstTime.secondsDegree);
 
     function getTime() {
         const now = new Date();
+
+        //local times
+        const localTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+        const localHours = localTime.getHours();
+        const localMinutes = localTime.getMinutes();
+        const localSeconds = localTime.getSeconds();
 
         //london time
         const londonTime = new Date(now.toLocaleString('en-GB', { timeZone: 'Europe/London' }));
@@ -30,6 +42,11 @@ function AnalaogClock() {
         const pstMinutes = pstTime.getMinutes();
         const pstSeconds = pstTime.getSeconds();
 
+        setLocalTime({
+            hourDegree: (localHours / 12) * 360 + (localMinutes / 60) * 30,
+            minuteDegree: (localMinutes / 60) * 360 + (localSeconds / 60) * 6,
+            secondsDegree: (localSeconds / 60) * 360
+        });
         setLondonTime({
             hourDegree: (londonHours / 12) * 360 + (londonMinutes / 60) * 30,
             minuteDegree: (londonMinutes / 60) * 360 + (londonSeconds / 60) * 6,
@@ -49,6 +66,13 @@ function AnalaogClock() {
 
     return (
         <div>
+            <h1>Local Time Zone</h1>
+            <div style={localClockStyles.clockContainer}>
+                <div style={localClockStyles.clockCenter}></div>
+                <div style={localClockStyles.hourHand} ></div>
+                <div style={localClockStyles.minuteHand} ></div>
+                <div style={localClockStyles.secondsHand}></div>
+            </div>
             <h1>PST Time Zone</h1>
 
             <div style={pstClockStyles.clockContainer}>
