@@ -17,6 +17,7 @@ function AnalaogClock() {
         minuteDegree: 0,
         secondsDegree: 0
     });
+
     const localClockStyles = useClockStyles(localTime.hourDegree, localTime.minuteDegree, localTime.secondsDegree);
     const londonClockStyles = useClockStyles(londonTime.hourDegree, londonTime.minuteDegree, londonTime.secondsDegree);
     const pstClockStyles = useClockStyles(pstTime.hourDegree, pstTime.minuteDegree, pstTime.secondsDegree);
@@ -59,6 +60,24 @@ function AnalaogClock() {
         });
     }
 
+    function displayNumberLabels() {
+        const labels = [];
+        const radius = 90;
+        const xAxis = 95;
+        const yAxis = 90;
+        for (let hour = 1; hour <= 12; hour++) {
+            const angle = (Math.PI / 6) * hour - Math.PI / 2;
+            const x = xAxis + radius * Math.cos(angle);
+            const y = yAxis + radius * Math.sin(angle);
+            labels.push(
+                <div style={{ position: 'absolute', left: `${x}px`, top: `${y}px` }}>
+                    {hour}
+                </div>
+            );
+        }
+        return labels;
+    }
+
     useEffect(() => {
         const interval = setInterval(getTime, 1000);
         return () => clearInterval(interval);
@@ -68,14 +87,21 @@ function AnalaogClock() {
         <div>
             <h1>Local Time Zone</h1>
             <div style={localClockStyles.clockContainer}>
+                <div style={localClockStyles.clockNumbers}>
+                    {displayNumberLabels()}
+                </div>
                 <div style={localClockStyles.clockCenter}></div>
                 <div style={localClockStyles.hourHand} ></div>
                 <div style={localClockStyles.minuteHand} ></div>
                 <div style={localClockStyles.secondsHand}></div>
             </div>
+
             <h1>PST Time Zone</h1>
 
             <div style={pstClockStyles.clockContainer}>
+                <div style={localClockStyles.clockNumbers}>
+                    {displayNumberLabels()}
+                </div>
                 <div style={pstClockStyles.clockCenter}></div>
                 <div style={pstClockStyles.hourHand} ></div>
                 <div style={pstClockStyles.minuteHand} ></div>
@@ -84,12 +110,15 @@ function AnalaogClock() {
             <h1>London, UK Time Zone</h1>
 
             <div style={londonClockStyles.clockContainer}>
+                <div style={localClockStyles.clockNumbers}>
+                    {displayNumberLabels()}
+                </div>
                 <div style={londonClockStyles.clockCenter}></div>
                 <div style={londonClockStyles.hourHand} ></div>
                 <div style={londonClockStyles.minuteHand} ></div>
                 <div style={londonClockStyles.secondsHand}></div>
             </div>
-        </div>
+        </div >
     );
 }
 
